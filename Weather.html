@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather App</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    text-align:center;
+    background: linear-gradient(120deg,#4facfe,#00f2fe);
+    color:white;
+    padding-top:50px;
+}
+.container{
+    background: rgba(0,0,0,0.3);
+    display:inline-block;
+    padding:30px;
+    border-radius:10px;
+}
+input{
+    padding:10px;
+    width:200px;
+    border:none;
+    border-radius:5px;
+}
+button{
+    padding:10px 20px;
+    margin:10px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    background:white;
+}
+#weather{
+    margin-top:20px;
+    font-size:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>Weather App</h1>
+
+<input type="text" id="city" placeholder="Enter city name">
+<br>
+<button onclick="getWeather()">Search</button>
+<button onclick="getLocationWeather()">Use My Location</button>
+
+<div id="weather"></div>
+</div>
+
+<script>
+const apiKey = "YOUR_API_KEY";
+
+async function getWeather(){
+    const city = document.getElementById("city").value;
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+    displayWeather(data);
+}
+
+function getLocationWeather(){
+navigator.geolocation.getCurrentPosition(async position=>{
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+    displayWeather(data);
+});
+}
+
+function displayWeather(data){
+    document.getElementById("weather").innerHTML =
+        `<h2>${data.name}</h2>
+         <p>Temperature: ${data.main.temp} °C</p>
+         <p>Weather: ${data.weather[0].description}</p>
+         <p>Humidity: ${data.main.humidity}%</p>
+         <p>Wind Speed: ${data.wind.speed} m/s</p>`;
+}
+</script>
+
+</body>
+</html>
